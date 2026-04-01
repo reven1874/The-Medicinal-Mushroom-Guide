@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medicinal Mushroom Guide — Jessica's Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F5EE;
+    --dark: #1C1A14;
+    --moss: #4A6741;
+    --moss-light: #D4E6CE;
+    --gold: #B8943F;
+    --gold-light: #F5E9CC;
+    --rust: #8B4A2B;
+    --rust-light: #F2DDD4;
+    --slate: #3A4A5C;
+    --slate-light: #D5DDE8;
+    --lavender: #6B5B8A;
+    --lavender-light: #E5DFEF;
+    --amber: #9C6B1A;
+    --amber-light: #F7EDDA;
+    --warn-red: #8B2020;
+    --warn-bg: #F9E5E5;
+    --border: rgba(28,26,20,0.12);
+    --shadow: 0 2px 20px rgba(28,26,20,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--dark);
+    color: var(--cream);
+    padding: 80px 24px 60px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(74,103,65,0.4) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(184,148,63,0.3) 0%, transparent 50%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .hero p {
+    font-size: 16px;
+    color: rgba(249,245,238,0.7);
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--gold); }
+  .hero-stat .lbl { font-size: 11px; color: rgba(249,245,238,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* NAV */
+  .nav {
+    background: var(--dark);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a {
+    color: rgba(249,245,238,0.6);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    white-space: nowrap;
+    transition: color 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .nav a:hover { color: var(--cream); border-bottom-color: var(--gold); }
+
+  /* LAYOUT */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 60px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  .section-header { margin-bottom: 36px; }
+  .section-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 8px;
+  }
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    color: var(--dark);
+  }
+  .section-header p { color: #666; margin-top: 8px; font-size: 14px; }
+
+  /* MUSHROOM CARDS */
+  .mush-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .mcard {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .mcard:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .mcard-accent { height: 5px; }
+  .mcard-body { padding: 20px; }
+  .mcard-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .mcard-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .mcard-sci { font-size: 12px; color: #888; font-style: italic; margin-bottom: 14px; }
+  .mcard-benefits { list-style: none; padding: 0; }
+  .mcard-benefits li {
+    font-size: 13px;
+    color: #555;
+    padding: 5px 0;
+    padding-left: 16px;
+    position: relative;
+    border-bottom: 1px solid rgba(28,26,20,0.05);
+  }
+  .mcard-benefits li:last-child { border-bottom: none; }
+  .mcard-benefits li::before { content: "→"; position: absolute; left: 0; color: #aaa; font-size: 11px; top: 6px; }
+  .mcard-note {
+    margin-top: 12px;
+    background: var(--warn-bg);
+    border-left: 3px solid #c0392b;
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--warn-red);
+    line-height: 1.5;
+  }
+
+  /* COLOR THEMES */
+  .theme-moss .mcard-accent { background: var(--moss); }
+  .theme-moss .mcard-tag { background: var(--moss-light); color: var(--moss); }
+  .theme-moss .mcard-name { color: var(--moss); }
+
+  .theme-gold .mcard-accent { background: var(--gold); }
+  .theme-gold .mcard-tag { background: var(--gold-light); color: var(--amber); }
+  .theme-gold .mcard-name { color: var(--amber); }
+
+  .theme-rust .mcard-accent { background: var(--rust); }
+  .theme-rust .mcard-tag { background: var(--rust-light); color: var(--rust); }
+  .theme-rust .mcard-name { color: var(--rust); }
+
+  .theme-slate .mcard-accent { background: var(--slate); }
+  .theme-slate .mcard-tag { background: var(--slate-light); color: var(--slate); }
+  .theme-slate .mcard-name { color: var(--slate); }
+
+  .theme-lavender .mcard-accent { background: var(--lavender); }
+  .theme-lavender .mcard-tag { background: var(--lavender-light); color: var(--lavender); }
+  .theme-lavender .mcard-name { color: var(--lavender); }
+
+  .theme-dark .mcard-accent { background: var(--dark); }
+  .theme-dark .mcard-tag { background: #eee; color: #555; }
+  .theme-dark .mcard-name { color: var(--dark); }
+
+  /* SYNERGY TABLE */
+  .synergy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .syn-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .syn-pair {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .syn-pill {
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--dark);
+    color: var(--cream);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .syn-plus { font-size: 14px; color: #aaa; }
+  .syn-goal {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 6px;
+  }
+  .syn-desc { font-size: 13px; color: #666; line-height: 1.5; }
+
+  /* CAUTION CARDS */
+  .caution-list { display: flex; flex-direction: column; gap: 12px; }
+  .caution-card {
+    background: var(--warn-bg);
+    border: 1px solid rgba(139,32,32,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .caution-title { font-size: 14px; font-weight: 500; color: var(--warn-red); margin-bottom: 6px; }
+  .caution-desc { font-size: 13px; color: #6b3030; line-height: 1.55; }
+
+  /* 14 BLEND SECTION */
+  .blend-header {
+    background: var(--dark);
+    color: var(--cream);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .blend-header-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  .blend-header-text p { font-size: 13px; color: rgba(249,245,238,0.6); }
+  .blend-stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+  .blend-stat { text-align: center; }
+  .blend-stat .n { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--gold); }
+  .blend-stat .l { font-size: 11px; color: rgba(249,245,238,0.5); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    color: rgba(249,245,238,0.5);
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  footer strong { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .mush-grid { grid-template-columns: 1fr; }
+    .synergy-grid { grid-template-columns: 1fr; }
+    .hero { padding: 60px 20px 40px; }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">A Comprehensive Reference Guide</div>
+    <h1>The <em>Medicinal</em><br>Mushroom Guide</h1>
+    <p>A comprehensive breakdown of health benefits, synergies, and interactions for 9 functional mushrooms + the 14 Mushroom Blend.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">9</div><div class="lbl">Individual Mushrooms</div></div>
+      <div class="hero-stat"><div class="num">14</div><div class="lbl">Blend Species</div></div>
+      <div class="hero-stat"><div class="num">2,000+</div><div class="lbl">Years of TCM Use</div></div>
+    </div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="#individual">Individual Mushrooms</a>
+  <a href="#synergies">Synergies</a>
+  <a href="#cautions">Cautions</a>
+  <a href="#blend">14 Blend</a>
+</nav>
+
+<!-- INDIVIDUAL MUSHROOMS -->
+<section id="individual">
+<div class="container">
+  <div class="section-header">
+    <div class="section-eyebrow">Research Breakdown</div>
+    <h2>Individual Mushrooms</h2>
+    <p>Health benefits for each mushroom in your lineup, backed by peer-reviewed research.</p>
+  </div>
+  <div class="mush-grid">
+
+    <div class="mcard theme-moss">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Beauty + Brain</span>
+        <div class="mcard-name">Tremella</div>
+        <div class="mcard-sci">Tremella fuciformis · Snow Mushroom</div>
+        <ul class="mcard-benefits">
+          <li>Polysaccharides hold ~500x their weight in water — outperforms hyaluronic acid for skin hydration</li>
+          <li>Activates the Nrf2 pathway — triggers 200+ cellular defense genes against aging</li>
+          <li>Neuroprotective — supports memory, focus, and nerve cell health</li>
+          <li>N-acetylglucosamine soothes gut lining; shown to help with IBS and colitis</li>
+          <li>Lowers LDL cholesterol by 31% and reduces triglycerides (animal studies)</li>
+          <li>Immunostimulatory — glucuronoxylomannan activates immune defenses</li>
+          <li>Anti-inflammatory, antidiabetic, adaptogenic stress support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-slate">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Immune Champion</span>
+        <div class="mcard-name">Turkey Tail</div>
+        <div class="mcard-sci">Trametes versicolor · Yun Zhi</div>
+        <ul class="mcard-benefits">
+          <li>PSK (krestin) — approved cancer adjunct therapy in Japan since the 1970s</li>
+          <li>Boosts natural killer cells, T-cells, and dendritic cells</li>
+          <li>Rich prebiotic fiber — improves gut microbiome diversity</li>
+          <li>PSP inhibits colon cancer cell growth and migration</li>
+          <li>Neuroprotective — reduces Alzheimer's markers in animal models</li>
+          <li>Anti-inflammatory: reduces TNFα, IL-1β, and IL-6 cytokines</li>
+          <li>Antibacterial against common pathogens (2024 review)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-moss">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Metabolic + Immune</span>
+        <div class="mcard-name">Maitake</div>
+        <div class="mcard-sci">Grifola frondosa · Hen of the Woods</div>
+        <ul class="mcard-benefits">
+          <li>D-fraction activates NK cells and supports cancer immunotherapy</li>
+          <li>SX-fraction clinically lowers blood glucose and improves insulin sensitivity</li>
+          <li>Lowers LDL cholesterol without affecting HDL (good cholesterol)</li>
+          <li>High natural Vitamin D2 — ~200% daily recommended intake per serving</li>
+          <li>Inhibits tumor growth across colon, breast, leukemia, and stomach cancers</li>
+          <li>Reduces blood pressure; 77% ovulation induction in PCOS patients (study)</li>
+        </ul>
+        <div class="mcard-note">Blood sugar caution: may compound effect of diabetes medications. Also enhances warfarin. Monitor closely with a doctor.</div>
+      </div>
+    </div>
+
+    <div class="mcard theme-lavender">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Calm + Immune King</span>
+        <div class="mcard-name">Red Reishi</div>
+        <div class="mcard-sci">Ganoderma lucidum · Mushroom of Immortality</div>
+        <ul class="mcard-benefits">
+          <li>Highest beta-glucan concentration of functional mushrooms</li>
+          <li>Boosts white blood cell production; supports innate and adaptive immunity</li>
+          <li>Regulates cortisol — adaptogenic stress relief and calm</li>
+          <li>Improves sleep quality — among the most studied for sleep</li>
+          <li>Antitumor properties; used as cancer adjunct therapy for 30+ years in Japan and China</li>
+          <li>Neuroprotective; supports cognitive function and mental clarity</li>
+          <li>Liver protective, anti-inflammatory, antioxidant</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-rust">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">⚠ Caution Required</span>
+        <div class="mcard-name">Amanita muscaria</div>
+        <div class="mcard-sci">Fly Agaric · Requires proper preparation</div>
+        <ul class="mcard-benefits">
+          <li>Muscimol as GABA-A agonist may reduce anxiety without serotonin pathways</li>
+          <li>Sleep support — used in microdose protocols for insomnia</li>
+          <li>Neuropathic pain relief — 2014 study showed significant decrease in acute pain</li>
+          <li>Traditional: topical analgesic for joint pain and bruising in Siberian folk medicine</li>
+          <li>Preliminary research into epilepsy, Alzheimer's, and Parkinson's</li>
+        </ul>
+        <div class="mcard-note">IMPORTANT: Raw/fresh mushroom is toxic. Must be properly dried or decarboxylated. Works through completely different pathways than all other mushrooms here. NOT FDA approved. Do not stack casually without professional guidance.</div>
+      </div>
+    </div>
+
+    <div class="mcard theme-gold">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Energy + Performance</span>
+        <div class="mcard-name">Cordyceps</div>
+        <div class="mcard-sci">Cordyceps militaris · Himalayan Gold</div>
+        <ul class="mcard-benefits">
+          <li>Increases ATP production at the cellular level — direct energy boost</li>
+          <li>Improves oxygen utilization and blood flow — top choice for athletes</li>
+          <li>Human studies confirm improved lactate threshold and delayed fatigue</li>
+          <li>Supports libido and reproductive vitality</li>
+          <li>Regulates sleep patterns; cognitive enhancer and brain fog reduction</li>
+          <li>Immunomodulatory via beta-glucan polysaccharides</li>
+          <li>Anti-inflammatory, antidiabetic, boosts antioxidant enzyme activity</li>
+        </ul>
+        <div class="mcard-note">Blood-thinning properties — those with clotting disorders should consult a doctor.</div>
+      </div>
+    </div>
+
+    <div class="mcard theme-slate">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Brain + Nerve</span>
+        <div class="mcard-name">Lion's Mane</div>
+        <div class="mcard-sci">Hericium erinaceus · The Think Mushroom</div>
+        <ul class="mcard-benefits">
+          <li>Hericenones and erinacines stimulate Nerve Growth Factor (NGF) — unique to this mushroom</li>
+          <li>Erinacines cross the blood-brain barrier to directly boost neuron production</li>
+          <li>Best clinical evidence for improving memory and cognition in older adults</li>
+          <li>Mood support — improves anxiety and depression via neurogenesis</li>
+          <li>Gut-brain axis support; highest antioxidant activity of functional mushrooms (2012 study)</li>
+          <li>Anti-inflammatory, antidiabetic, cardiovascular and autoimmune support</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-dark">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Antioxidant Powerhouse</span>
+        <div class="mcard-name">Chaga</div>
+        <div class="mcard-sci">Inonotus obliquus · The Birch Mushroom</div>
+        <ul class="mcard-benefits">
+          <li>Highest ORAC antioxidant capacity of all functional mushrooms</li>
+          <li>Betulinic acid (from birch host) — anti-cancer properties unique to Chaga</li>
+          <li>Activates macrophages and regulates cytokines — strong immune activation</li>
+          <li>Anti-inflammatory via NF-κB pathway modulation</li>
+          <li>Improves gut microbiome, digestion, and nutrient absorption</li>
+          <li>Reduces blood glucose and uric acid; protects DNA from oxidative damage</li>
+          <li>Skin protection: reduces dark spots, fine lines, and sun damage</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-rust">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Anti-Cancer Specialist</span>
+        <div class="mcard-name">Mesima</div>
+        <div class="mcard-sci">Phellinus linteus · Black Hoof / Women's Island Mushroom</div>
+        <ul class="mcard-benefits">
+          <li>Identified in 1983 as having the strongest antitumor activity of all hymenomycetes</li>
+          <li>Acts as a radiosensitizer — makes cancer cells more vulnerable to radiation therapy</li>
+          <li>Suppresses allergic responses by balancing Th1/Th2 immune cytokines</li>
+          <li>Researched for rheumatoid arthritis, asthma, and immune-related infertility</li>
+          <li>Liver protective, antidiabetic, anti-angiogenic (blocks tumor blood vessel growth)</li>
+          <li>Called a "miracle medicine" in East Asian TCM for centuries</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- SYNERGIES -->
+<section id="synergies">
+<div class="container">
+  <div class="section-header">
+    <div class="section-eyebrow">Stacking Guide</div>
+    <h2>Best Combinations</h2>
+    <p>These mushrooms don't cancel each other out — most stack well together. Here are the most powerful pairings.</p>
+  </div>
+  <div class="synergy-grid">
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Lion's Mane</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Cordyceps</span>
+      </div>
+      <div class="syn-goal">Focus + Energy Stack</div>
+      <p class="syn-desc">The most popular daytime stack. Cordyceps boosts cellular energy and oxygen flow; Lion's Mane delivers mental clarity and neurogenesis. Perfect for demanding workdays.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Reishi</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Lion's Mane</span>
+      </div>
+      <div class="syn-goal">Calm Focus</div>
+      <p class="syn-desc">Reishi regulates cortisol and keeps you centered; Lion's Mane sharpens cognition. Ideal when you need focus under stress or pressure. Great evening + morning protocol.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Reishi</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Turkey Tail</span>
+      </div>
+      <div class="syn-goal">Immune Fortress</div>
+      <p class="syn-desc">Both enhance innate and adaptive immunity through complementary pathways. Turkey Tail brings PSK/PSP and prebiotic support; Reishi adds deep beta-glucan immune depth.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Cordyceps</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Chaga</span>
+      </div>
+      <div class="syn-goal">Athlete Stack</div>
+      <p class="syn-desc">Cordyceps increases ATP output and oxygen; Chaga adds endurance support and antioxidant protection to reduce oxidative damage from exertion. Top combo for performance and recovery.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Reishi</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Chaga</span>
+      </div>
+      <div class="syn-goal">Anti-Inflammatory Duo</div>
+      <p class="syn-desc">Both are powerful anti-inflammatories with immune-balancing properties. Together they provide broad-spectrum antioxidant protection and stress resilience for general wellness and longevity.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Chaga</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Tremella</span>
+      </div>
+      <div class="syn-goal">Skin + Beauty Stack</div>
+      <p class="syn-desc">Chaga fights free radical damage at the cellular level; Tremella hydrates and plumps from the inside out. One of the best natural combinations for skin radiance and anti-aging.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Reishi</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Maitake</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Shiitake</span>
+      </div>
+      <div class="syn-goal">Research-Backed Immune Trio</div>
+      <p class="syn-desc">A 2019 study specifically confirmed this triad as a "highly potent immunostimulator" — synergistic beta + alpha glucan interaction was stronger than any individual mushroom alone.</p>
+    </div>
+
+    <div class="syn-card">
+      <div class="syn-pair">
+        <span class="syn-pill">Maitake</span>
+        <span class="syn-plus">+</span>
+        <span class="syn-pill">Turkey Tail</span>
+      </div>
+      <div class="syn-goal">Metabolic + Immune</div>
+      <p class="syn-desc">Maitake handles blood sugar and cholesterol while Turkey Tail provides prebiotic gut support and immune modulation. Complementary targets with no conflicts.</p>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<!-- CAUTIONS -->
+<section id="cautions">
+<div class="container">
+  <div class="section-header">
+    <div class="section-eyebrow">Know Before You Stack</div>
+    <h2>Interactions to Be Aware Of</h2>
+    <p>These mushrooms generally do NOT cancel each other out — but here are the specific situations requiring care.</p>
+  </div>
+  <div class="caution-list">
+    <div class="caution-card">
+      <div class="caution-title">Amanita muscaria + Any other mushroom in this list</div>
+      <p class="caution-desc">Amanita works through GABA-A receptors (CNS depressant pathway) — completely different from the beta-glucan immune pathways all other mushrooms use. Combining it with Reishi (calming) or Cordyceps (stimulating) could create unpredictable CNS effects. Should NOT be casually stacked without professional guidance.</p>
+    </div>
+    <div class="caution-card">
+      <div class="caution-title">Maitake + Blood sugar medications (Metformin, insulin)</div>
+      <p class="caution-desc">Maitake independently lowers blood glucose. Combined with diabetes medications, blood sugar can drop dangerously low. Not a mushroom-to-mushroom conflict — it's a medication interaction. Monitor closely and discuss with a doctor.</p>
+    </div>
+    <div class="caution-card">
+      <div class="caution-title">Cordyceps or Maitake + Blood thinners (Warfarin, etc.)</div>
+      <p class="caution-desc">Both Cordyceps and Maitake have blood-thinning properties. Combined with Warfarin or other anticoagulants, this could significantly increase bleeding risk. Discuss with your healthcare provider before use.</p>
+    </div>
+    <div class="caution-card">
+      <div class="caution-title">Multiple immune-boosters + autoimmune conditions</div>
+      <p class="caution-desc">Turkey Tail, Reishi, Maitake, Chaga, and Cordyceps all modulate the immune system — great for healthy people. However, those with autoimmune conditions (lupus, RA, MS) should be cautious stacking several immune-boosters, as overstimulating an already overactive immune system can worsen symptoms.</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 14 BLEND -->
+<section id="blend">
+<div class="container">
+  <div class="section-header">
+    <div class="section-eyebrow">Proprietary Formula</div>
+    <h2>14 Mushroom Blend</h2>
+    <p>A comprehensive analysis of all 14 species in the organic proprietary blend.</p>
+  </div>
+
+  <div class="blend-header">
+    <div class="blend-header-text">
+      <h3>Proprietary Organic Mushroom Blend</h3>
+      <p>All organic · Fruiting body + mycelium preparation · Activated Reishi</p>
+    </div>
+    <div class="blend-stats">
+      <div class="blend-stat"><div class="n">4,000mg</div><div class="l">Per serving</div></div>
+      <div class="blend-stat"><div class="n">250</div><div class="l">Servings</div></div>
+      <div class="blend-stat"><div class="n">14</div><div class="l">Species</div></div>
+    </div>
+  </div>
+
+  <div class="mush-grid">
+
+    <div class="mcard theme-moss">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Longevity + Immunity</span>
+        <div class="mcard-name">Shiitake</div>
+        <div class="mcard-sci">Lentinula edodes</div>
+        <ul class="mcard-benefits">
+          <li>Lentinan beta-glucan — one of only a few clinically studied beta-glucans</li>
+          <li>Boosts NK cells and white blood cells; liver and heart support</li>
+          <li>Antimicrobial and antiviral properties</li>
+          <li>Cognitive enhancement and weight regulation support</li>
+          <li>Synergistically stronger for immunity when combined with Maitake (human study confirmed)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-gold">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Metabolic + Stress</span>
+        <div class="mcard-name">Blazei</div>
+        <div class="mcard-sci">Agaricus blazei · Himematsutake (Japan)</div>
+        <ul class="mcard-benefits">
+          <li>Fights physical and emotional stress — traditionally called a "stress mushroom"</li>
+          <li>Improved NK cell activity in gynecological cancer patients undergoing chemo (human study)</li>
+          <li>Improved insulin resistance in diabetic patients (human study)</li>
+          <li>Boosts Th1 immune response — valuable cancer immunoadjuvant</li>
+          <li>Kidney function support, anti-inflammatory, cholesterol reduction</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-slate">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Calm + Gut + Sleep</span>
+        <div class="mcard-name">Poria</div>
+        <div class="mcard-sci">Poria cocos / Wolfiporia extensa · "Fuling"</div>
+        <ul class="mcard-benefits">
+          <li>2,000+ years of continuous medicinal use — one of the longest of any mushroom</li>
+          <li>Pachymic acid stimulates serotonin → reduces anxiety, depression, and insomnia</li>
+          <li>Polysaccharides = 84% of dry weight; antitumor and immunomodulatory</li>
+          <li>Hepatoprotective (liver), renoprotective (kidney), anti-inflammatory</li>
+          <li>Cognitive-enhancing; TCM uses: memory, anxiety, fatigue, tinnitus, digestion</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-lavender">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Antiviral + Respiratory</span>
+        <div class="mcard-name">Agarikon</div>
+        <div class="mcard-sci">Fomitopsis officinalis · "Elixir of Long Life"</div>
+        <ul class="mcard-benefits">
+          <li>Called "elixirium ad longam vitam" by Dioscorides in 1st century AD</li>
+          <li>NIH-funded research: compounds more effective than Ribavirin against H5N1 and H3N2 flu</li>
+          <li>Active against herpes simplex, pox viruses, and tuberculosis</li>
+          <li>Anti-inflammatory, cardiovascular support, respiratory health</li>
+          <li>Considered by mycologists to be the most potent antiviral mushroom known</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-rust">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Immune + Cardio</span>
+        <div class="mcard-name">Suehirotake</div>
+        <div class="mcard-sci">Schizophyllum commune · Split Gill</div>
+        <ul class="mcard-benefits">
+          <li>Produces schizophyllan — one of the few clinically studied beta-glucans</li>
+          <li>Antitumor and immune enhancement; inhibits chromosomal damage from chemo/radiation</li>
+          <li>Cardioprotective, hepatoprotective, blood pressure support</li>
+          <li>One of the most nutrient-rich mushrooms in this blend</li>
+          <li>Antioxidant and anti-inflammatory</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-moss">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Cardiovascular + Respiratory</span>
+        <div class="mcard-name">Oyster Mushroom</div>
+        <div class="mcard-sci">Pleurotus ostreatus · Hiratake</div>
+        <ul class="mcard-benefits">
+          <li>Produces pleuran — well-studied beta-glucan for immune support</li>
+          <li>Reduces VLDL bad cholesterol; cardioprotective</li>
+          <li>Antiviral, antimicrobial, antidiabetic properties</li>
+          <li>Promotes respiratory health; steadies nerves (folk medicine)</li>
+          <li>One of the few mushrooms that is also genuinely delicious to eat</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mcard theme-dark">
+      <div class="mcard-accent"></div>
+      <div class="mcard-body">
+        <span class="mcard-tag">Ancient Healer</span>
+        <div class="mcard-name">True Tinder Polypore</div>
+        <div class="mcard-sci">Fomes fomentarius · The Iceman Fungus</div>
+        <ul class="mcard-benefits">
+          <li>Found on Ötzi the Iceman (3,300 BC) — oldest documented medicinal mushroom in history</li>
+          <li>Used across European history as wound dressing and styptic (stops bleeding)</li>
+          <li>Cytotoxic and antitumor effects confirmed in modern research</li>
+          <li>Analgesic (pain-relieving), antibacterial, anti-inflammatory</li>
+          <li>One of the most chemically diverse polypores studied (triterpenoids, benzofurans, flavonoids)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 28px; background: var(--dark); color: var(--cream); border-radius: 16px; padding: 28px 30px;">
+    <div style="font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 12px; color: var(--gold);">What makes this blend remarkable</div>
+    <p style="font-size: 14px; color: rgba(249,245,238,0.75); line-height: 1.7;">The 14 mushrooms collectively cover every major health pathway: immune modulation (all 14), antitumor (9 species), antioxidant protection (all 14), cardiovascular health (6 species), metabolic and blood sugar (4 species), cognitive and brain health (4 species), respiratory health (4 species), liver protection (5 species), kidney protection (2 species), sleep and anxiety (2 species), antiviral (4 species), and anti-inflammatory (all 14). No two mushrooms target the same pathway in the same way — they are genuinely complementary at the molecular level.</p>
+  </div>
+</div>
+</section>
+
+<footer>
+  <div style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); margin-bottom: 12px;">Medicinal Mushroom Guide</div>
+  <p>Sources: PubMed, Memorial Sloan Kettering Integrative Medicine, National Cancer Institute, Medical News Today, WebMD, and peer-reviewed journals.</p>
+  <p style="margin-top: 12px; font-size: 11px; opacity: 0.5;">This guide is for educational purposes only and does not constitute medical advice. Consult a healthcare provider before beginning any supplement regimen. These statements have not been evaluated by the FDA.</p>
+</footer>
+
+</body>
+</html>
