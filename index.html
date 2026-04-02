@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Medicinal Mushroom Guide — Jessica's Research</title>
+<title>Medicinal Mushroom Guide</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -768,11 +768,56 @@
 </div>
 </section>
 
+<section id="qrcode" style="background: var(--dark); border-bottom: none;">
+<div class="container" style="text-align: center;">
+  <div class="section-eyebrow" style="color: var(--gold);">Share This Guide</div>
+  <h2 style="font-family: 'Playfair Display', serif; font-size: clamp(24px,4vw,36px); color: var(--cream); margin-bottom: 12px;">Scan to Share</h2>
+  <p style="color: rgba(249,245,238,0.6); font-size: 14px; margin-bottom: 32px;">Scan this QR code on any device to open the guide.</p>
+  <div id="qr-box" style="display:inline-block; background:#fff; padding:20px; border-radius:16px; margin-bottom:24px;"></div>
+  <br>
+  <button id="dl-btn" onclick="downloadQR()" style="display:inline-block; background: var(--gold); color: var(--dark); border:none; padding:14px 32px; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; cursor:pointer; margin-top:8px;">Download QR Code</button>
+  <p id="url-display" style="margin-top:16px; font-size:12px; color:rgba(249,245,238,0.4); word-break:break-all;"></p>
+</div>
+</section>
+
 <footer>
   <div style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); margin-bottom: 12px;">Medicinal Mushroom Guide</div>
   <p>Sources: PubMed, Memorial Sloan Kettering Integrative Medicine, National Cancer Institute, Medical News Today, WebMD, and peer-reviewed journals.</p>
   <p style="margin-top: 12px; font-size: 11px; opacity: 0.5;">This guide is for educational purposes only and does not constitute medical advice. Consult a healthcare provider before beginning any supplement regimen. These statements have not been evaluated by the FDA.</p>
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  var pageURL = window.location.href;
+  document.getElementById('url-display').textContent = pageURL;
+
+  var qr = new QRCode(document.getElementById('qr-box'), {
+    text: pageURL,
+    width: 220,
+    height: 220,
+    colorDark: '#1C1A14',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  function downloadQR() {
+    var canvas = document.querySelector('#qr-box canvas');
+    if (!canvas) {
+      var img = document.querySelector('#qr-box img');
+      if (img) {
+        var a = document.createElement('a');
+        a.href = img.src;
+        a.download = 'mushroom-guide-qr.png';
+        a.click();
+      }
+      return;
+    }
+    var link = document.createElement('a');
+    link.download = 'mushroom-guide-qr.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+</script>
 
 </body>
 </html>
